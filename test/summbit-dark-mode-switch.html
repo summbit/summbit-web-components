@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <title>Dark Mode Switch Test Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="../js/summbit-dark-mode-switch.js"></script>
+    <style>
+      :root {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100vw;
+        height: 100vh;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        width: 100vw;
+        height: 100vh;
+      }
+
+      .cell1-dark-mode-enabled-false, .cell1-dark-mode-enabled-true,
+      .cell2-dark-mode-enabled-false, .cell2-dark-mode-enabled-true,
+      .cell3-dark-mode-enabled-false, .cell3-dark-mode-enabled-true,
+      .cell4-dark-mode-enabled-false, .cell4-dark-mode-enabled-true,
+      .cell5-dark-mode-enabled-false, .cell5-dark-mode-enabled-true,
+      .cell6-dark-mode-enabled-false, .cell6-dark-mode-enabled-true {
+        --summbit-dark-mode-switch-duration: 0.2s;
+        --summbit-dark-mode-switch-interpolation: cubic-bezier(0.66, 0, 0.33, 1);
+        display: grid;
+        grid-template-rows: 40px auto;
+        transition: background-color var(--summbit-dark-mode-switch-duration) var(--summbit-dark-mode-switch-interpolation);
+      }
+
+      .cell1-dark-mode-enabled-false {
+        background-color: #f7f9fb;
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .cell1-dark-mode-enabled-true {
+        background-color: #1b1c1d;
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .cell2-dark-mode-enabled-false {
+        background-color: #f7f9fb;
+        grid-column: 2;
+        grid-row: 1;
+      }
+
+      .cell2-dark-mode-enabled-true {
+        background-color: #1b1c1d;
+        grid-column: 2;
+        grid-row: 1;
+      }
+
+      .cell3-dark-mode-enabled-false {
+        --summbit-dark-mode-switch-duration: 2s;
+        --summbit-dark-mode-switch-interpolation: cubic-bezier(0.66, 0, 0.33, 1);
+        background-color: #1fc227;
+        grid-column: 3;
+        grid-row: 1;
+      }
+
+      .cell3-dark-mode-enabled-true {
+        --summbit-dark-mode-switch-duration: 2s;
+        --summbit-dark-mode-switch-interpolation: cubic-bezier(0.66, 0, 0.33, 1);
+        background-color: #1f72c5;
+        grid-column: 3;
+        grid-row: 1;
+      }
+
+      .cell4-dark-mode-enabled-false {
+        --summbit-dark-mode-switch-duration: 1s;
+        --summbit-dark-mode-switch-interpolation: cubic-bezier(0.66, 0, 0.33, 1);
+        background-color: #f7f9fb;
+        grid-column: 1;
+        grid-row: 2;
+      }
+
+      .cell4-dark-mode-enabled-true {
+        --summbit-dark-mode-switch-duration: 1s;
+        --summbit-dark-mode-switch-interpolation: cubic-bezier(0.66, 0, 0.33, 1);
+        background-color: #1b1c1d;
+        grid-column: 1;
+        grid-row: 2;
+      }
+
+      .cell5-dark-mode-enabled-false {
+        background-color: #f7f9fb;
+        grid-column: 2;
+        grid-row: 2;
+      }
+
+      .cell5-dark-mode-enabled-true {
+        background-color: #1b1c1d;
+        grid-column: 2;
+        grid-row: 2;
+      }
+
+      .cell6-dark-mode-enabled-false {
+        background-color: #f7f9fb;
+        grid-column: 3;
+        grid-row: 2;
+      }
+
+      .cell6-dark-mode-enabled-true {
+        background-color: #1b1c1d;
+        grid-column: 3;
+        grid-row: 2;
+      }
+
+      .centering-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #switch2 {
+        --summbit-dark-mode-switch-light-color: #f7f9fb;
+        --summbit-dark-mode-switch-dark-color: #1b1c1d;
+        height: 100px;
+        border: 5px solid red;
+        padding: 20px;
+        margin: 10px;
+      }
+
+      #switch3 {
+        --summbit-dark-mode-switch-light-color: #1fc227;
+        --summbit-dark-mode-switch-dark-color: #1b81e7;
+        width: 80px;
+        height: 120px;
+      }
+
+      #switch4 {
+        --summbit-dark-mode-switch-light-color: #f7f9fb;
+        --summbit-dark-mode-switch-dark-color: #1b1c1d;
+        width: 100%;
+        height: 40%;
+      }
+
+      #switch5 {
+        --summbit-dark-mode-switch-light-color: #f7f9fb;
+        --summbit-dark-mode-switch-dark-color: #1b1c1d;
+        width: 80px;
+      }
+
+      #switch6 {
+        --summbit-dark-mode-switch-light-color: #f7f9fb;
+        --summbit-dark-mode-switch-dark-color: #1b1c1d;
+        width: 10px;
+        border: 25px solid green;
+        border-radius: 100vmax;
+      }
+    </style>
+  </head>
+
+  <body>
+    <script>
+      function toggleBackgroundColor(darkModeSwitchId, isEnabled) {
+        const cell     = document.getElementById(darkModeSwitchId).parentElement.parentElement;
+        cell.className = cell.className.substring(0, 24) + isEnabled;
+      }
+
+      function toggleByCode(darkModeSwitchId) {
+        const darkModeSwitch   = document.getElementById(darkModeSwitchId);
+        darkModeSwitch.enabled = !darkModeSwitch.enabled;
+        toggleBackgroundColor(darkModeSwitchId, darkModeSwitch.enabled);
+      }
+
+      function toggleByAttribute(darkModeSwitchId) {
+        const darkModeSwitch = document.getElementById(darkModeSwitchId);
+        const attributeName  = "enabled";
+        const isEnabled      = darkModeSwitch.hasAttribute(attributeName);
+        toggleBackgroundColor(darkModeSwitchId, !isEnabled);
+        if(isEnabled) {
+          darkModeSwitch.removeAttribute(attributeName);
+        } else {
+          darkModeSwitch.setAttribute(attributeName, "");
+        }
+      }
+    </script>
+    <grid class="grid">
+      <div class="cell1-dark-mode-enabled-true">
+        <div class="centering-container">
+          <button onclick="toggleByCode('switch1');">Toggle by Code</button>
+          <button onclick="toggleByAttribute('switch1');">Toggle by Attribute</button>
+        </div>
+        <div class="centering-container">
+          <summbit-dark-mode-switch id="switch1" onchange="toggleBackgroundColor('switch1', event.detail.enabled);" enabled></summbit-dark-mode-switch>
+        </div>
+      </div>
+      <div class="cell2-dark-mode-enabled-false">
+        <div class="centering-container">
+          <button onclick="toggleByCode('switch2');">Toggle by Code</button>
+          <button onclick="toggleByAttribute('switch2');">Toggle by Attribute</button>
+        </div>
+        <div class="centering-container">
+          <summbit-dark-mode-switch id="switch2" onchange="toggleBackgroundColor('switch2', event.detail.enabled);"></summbit-dark-mode-switch>
+        </div>
+      </div>
+      <div class="cell3-dark-mode-enabled-true">
+        <div class="centering-container">
+          <button onclick="toggleByCode('switch3');">Toggle by Code</button>
+          <button onclick="toggleByAttribute('switch3');">Toggle by Attribute</button>
+        </div>
+        <div class="centering-container">
+          <summbit-dark-mode-switch id="switch3" onchange="toggleBackgroundColor('switch3', event.detail.enabled);" enabled=""></summbit-dark-mode-switch>
+        </div>
+      </div>
+      <div class="cell4-dark-mode-enabled-false">
+        <div class="centering-container">
+          <button onclick="toggleByCode('switch4');">Toggle by Code</button>
+          <button onclick="toggleByAttribute('switch4');">Toggle by Attribute</button>
+        </div>
+        <div class="centering-container">
+          <summbit-dark-mode-switch id="switch4" onchange="toggleBackgroundColor('switch4', event.detail.enabled);"></summbit-dark-mode-switch>
+        </div>
+      </div>
+      <div class="cell5-dark-mode-enabled-true">
+        <div class="centering-container">
+          <button onclick="toggleByCode('switch5');">Toggle by Code</button>
+          <button onclick="toggleByAttribute('switch5');">Toggle by Attribute</button>
+        </div>
+        <div class="centering-container">
+          <summbit-dark-mode-switch id="switch5" onchange="toggleBackgroundColor('switch5', event.detail.enabled);"></summbit-dark-mode-switch>
+        </div>
+      </div>
+      <div class="cell6-dark-mode-enabled-false">
+        <div class="centering-container">
+          <button onclick="toggleByCode('switch6');">Toggle by Code</button>
+          <button onclick="toggleByAttribute('switch6');">Toggle by Attribute</button>
+        </div>
+        <div class="centering-container">
+          <summbit-dark-mode-switch id="switch6" onchange="toggleBackgroundColor('switch6', event.detail.enabled);"></summbit-dark-mode-switch>
+        </div>
+      </div>
+    </grid>
+    <script type="module">
+      document.getElementById("switch5").enabled = true;
+    </script>
+
+  </body>
+</html>

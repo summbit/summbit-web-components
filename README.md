@@ -8,3 +8,4 @@ See [`LICENSE.txt`](https://github.com/summbit/summbit-web-components/blob/maste
 
 #### [Overview](https://summbit.github.io/summbit-web-components/)
 - [`summbit-discrete-slider`](https://github.com/summbit/summbit-web-components/blob/master/docs/summbit-discrete-slider.md)
+- [`summbit-dark-mode-switch`](https://github.com/summbit/summbit-web-components/blob/master/docs/summbit-dark-mode-switch.md)
