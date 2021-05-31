@@ -1,0 +1,58 @@
+################################################################################
+# Git automatically determines whether it deals with text or binary files. If it
+# determines that a file is a text file it will convert all line endings of that
+# file to be just single LF (line feed) characters before committing the file.
+# This behaviour can be altered by providing more specific instructions for
+# files after the below statement.
+################################################################################
+
+* text=auto
+
+
+################################################################################
+# Files interpreted by the Windows cmd.exe shall be treated as text files which
+# means their line endings are converted to just LF instead of CRLF when such a
+# file is committed. If the file is written out to the working directory the
+# line endings are always converted to CRLF.
+################################################################################
+
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+
+################################################################################
+# Files that are executed using a Linux shell shall be treated as text files
+# which means their line endings are converted to just LF instead of CRLF when
+# such a file is committed. If the file is written out to the working directory
+# the line endings are always converted to LF which is important even if a shell
+# provided by the Windows Subsystem for Linux is used.
+################################################################################
+
+*.sh text eol=lf
+
+
+################################################################################
+# Treat the following files as text files which means that their line endings
+# are converted to just LF instead of CRLF when such a file is committed. If the
+# file is written out to the working directory the line endings are converted to
+# the default line ending of the platform.
+################################################################################
+
+*.css  text
+*.html text
+*.js   text
+*.json text
+*.scss text
+*.svg  text
+
+
+################################################################################
+# Treat the following files as binary files which means there is no line endings
+# conversion applied and changes are stored as binary patches.
+################################################################################
+
+*.gif  binary
+*.jpg  binary
+*.pdf  binary
+*.png  binary
+*.webp binary
