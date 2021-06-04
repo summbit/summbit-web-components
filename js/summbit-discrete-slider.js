@@ -14,8 +14,16 @@ const nameOrientation       = "orientation";
 const nameThumb             = "thumb";
 const nameDot               = "dot";
 const nameDotContainer      = "dot-container";
-const keysToIncrement       = ["ArrowUp", "ArrowRight"];
-const keysToDecrement       = ["ArrowDown", "ArrowLeft"];
+const arrowUp               = "ArrowUp";
+const arrowDown             = "ArrowDown";
+const arrowRight            = "ArrowRight";
+const arrowLeft             = "ArrowLeft";
+const keyGroup1             = [arrowUp  , arrowRight];
+const keyGroup2             = [arrowUp  , arrowLeft];
+const keyGroup3             = [arrowDown, arrowRight];
+const keyGroup4             = [arrowDown, arrowLeft];
+const keysToSetToMinimum    = ["Home"];
+const keysToSetToMaximum    = ["End"];
 const propertyTrackColor    = `--${webComponentName}-private-track-color`;
 const propertyProgressColor = `--${webComponentName}-private-progress-color`;
 const propertyThumbDiameter = `--${webComponentName}-private-thumb-diameter`;
@@ -263,6 +271,8 @@ export default class SummbitDiscreteSlider extends HTMLElement {
     this._dotContainerElement = this.shadowRoot.getElementById(nameDotContainer);
     this._thumbElement        = this.shadowRoot.getElementById(nameThumb);
     this._resizeObserver      = new ResizeObserver(this._resizeHandler.bind(this));
+    this._keysToIncrement     = keyGroup1;
+    this._keysToDecrement     = keyGroup4;
     this.ondragstart          = () => false;
     this.addEventListener("pointerdown", this._pointerDownHandler.bind(this));
     this.addEventListener("keydown", this._keyDownHandler.bind(this));
@@ -295,6 +305,7 @@ export default class SummbitDiscreteSlider extends HTMLElement {
           break;
         case nameOrientation:
           this._orientation = newValue;
+          this._assignIncrementAndDecrementKeys();
           this._updateElementStyle();
           this._createAllDots();
           this._updateThumbPosition();
@@ -366,10 +377,18 @@ export default class SummbitDiscreteSlider extends HTMLElement {
   }
 
   _keyDownHandler(event) {
-    if(keysToIncrement.includes(event.code)) {
+    if(this._keysToIncrement.includes(event.code)) {
+      event.preventDefault();
       this._incrementValue();
-    } else if(keysToDecrement.includes(event.code)) {
+    } else if(this._keysToDecrement.includes(event.code)) {
+      event.preventDefault();
       this._decrementValue();
+    } else if(keysToSetToMinimum.includes(event.code)) {
+      event.preventDefault();
+      this._setValueToMinimum();
+    } else if(keysToSetToMaximum.includes(event.code)) {
+      event.preventDefault();
+      this._setValueToMaximum();
     }
   }
 
@@ -482,6 +501,22 @@ export default class SummbitDiscreteSlider extends HTMLElement {
     }
   }
 
+  _setValueToMinimum() {
+    if(this._value != this._minimum) {
+      this.value = this._minimum;
+      this._dispatchInputEvent();
+      this._dispatchChangeEvent();
+    }
+  }
+
+  _setValueToMaximum() {
+    if(this._value != this._maximum) {
+      this.value = this._maximum;
+      this._dispatchInputEvent();
+      this._dispatchChangeEvent();
+    }
+  }
+
   _updateValue(event) {
     let index = Math.round(this._calculateProgress(event) * (this._maximum - this._minimum));
     let value = parseInt(this._dotContainerElement.children[index].dataset.value);
@@ -514,6 +549,24 @@ export default class SummbitDiscreteSlider extends HTMLElement {
         break;
     }
     return Math.min(Math.max(position, 0), trackLength) / trackLength;
+  }
+
+  _assignIncrementAndDecrementKeys() {
+    switch(this._orientation) {
+      case OrientationEnum.LeftToRight:
+      case OrientationEnum.BottomToTop:
+        this._keysToIncrement = keyGroup1;
+        this._keysToDecrement = keyGroup4;
+        break;
+      case OrientationEnum.RightToLeft:
+        this._keysToIncrement = keyGroup2;
+        this._keysToDecrement = keyGroup3;
+        break;
+      case OrientationEnum.TopToBottom:
+        this._keysToIncrement = keyGroup3;
+        this._keysToDecrement = keyGroup2;
+        break;
+    }
   }
 
   _updateElementStyle() {
