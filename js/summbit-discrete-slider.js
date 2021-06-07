@@ -45,6 +45,7 @@ template.innerHTML          = `
   ${propertyTrackColor}: var(--${webComponentName}-track-color, #a8bec9);
   ${propertyProgressColor}: var(--${webComponentName}-progress-color, #0079c9);
   ${propertyThumbDiameter}: var(--${webComponentName}-thumb-diameter, 20px);
+  ${propertyThumbPosition}: 0px;
   --${webComponentName}-private-thumb-color: var(--${webComponentName}-thumb-color, #ffffff);
   --${webComponentName}-private-track-width: var(--${webComponentName}-track-width, 4px);
   --${webComponentName}-private-track-offset: calc(calc(100% - var(--${webComponentName}-private-track-width)) / 2);
@@ -270,6 +271,7 @@ export default class SummbitDiscreteSlider extends HTMLElement {
     this._maximumElement      = this.shadowRoot.getElementById(nameMaximum);
     this._dotContainerElement = this.shadowRoot.getElementById(nameDotContainer);
     this._thumbElement        = this.shadowRoot.getElementById(nameThumb);
+    this._hostStyle           = this.shadowRoot.styleSheets[0].rules[0].style;
     this._resizeObserver      = new ResizeObserver(this._resizeHandler.bind(this));
     this._keysToIncrement     = keyGroup1;
     this._keysToDecrement     = keyGroup4;
@@ -453,11 +455,11 @@ export default class SummbitDiscreteSlider extends HTMLElement {
         switch(this._orientation) {
           case OrientationEnum.LeftToRight:
           case OrientationEnum.RightToLeft:
-            this._trackElement.style.setProperty(propertyThumbPosition, this._dotContainerElement.children[i].offsetLeft + "px", "");
+            this._hostStyle.setProperty(propertyThumbPosition, `${this._dotContainerElement.children[i].offsetLeft}px`, "");
             return;
           case OrientationEnum.TopToBottom:
           case OrientationEnum.BottomToTop:
-            this._trackElement.style.setProperty(propertyThumbPosition, this._dotContainerElement.children[i].offsetTop + "px", "");
+            this._hostStyle.setProperty(propertyThumbPosition, `${this._dotContainerElement.children[i].offsetTop}px`, "");
             return;
         }
       }
