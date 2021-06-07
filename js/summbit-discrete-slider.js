@@ -320,35 +320,35 @@ export default class SummbitDiscreteSlider extends HTMLElement {
     this._resizeObserver.observe(this, { box: "content-box" });
   }
 
-  set min(value) {
+  set [nameMinimum](value) {
     this.setAttribute(nameMinimum, value);
   }
 
-  get min() {
+  get [nameMinimum]() {
     return this._minimum;
   }
 
-  set max(value) {
+  set [nameMaximum](value) {
     this.setAttribute(nameMaximum, value);
   }
 
-  get max() {
+  get [nameMaximum]() {
     return this._maximum;
   }
 
-  set value(value) {
+  set [nameValue](value) {
     this.setAttribute(nameValue, this._clampValue(value));
   }
 
-  get value() {
+  get [nameValue]() {
     return this._value;
   }
 
-  set orientation(value) {
+  set [nameOrientation](value) {
     this.setAttribute(nameOrientation, value);
   }
 
-  get orientation() {
+  get [nameOrientation]() {
     return this._orientation;
   }
 
@@ -475,19 +475,19 @@ export default class SummbitDiscreteSlider extends HTMLElement {
 
   _restrictValueToMinimum() {
     if(this._value < this._minimum) {
-      this.value = this._minimum;
+      this[nameValue] = this._minimum;
     }
   }
 
   _restrictValueToMaximum() {
     if(this._value > this._maximum) {
-      this.value = this._maximum;
+      this[nameValue] = this._maximum;
     }
   }
 
   _incrementValue() {
     if(this._value < this._maximum) {
-      this.value += 1;
+      this[nameValue] += 1;
       this._dispatchInputEvent();
       this._dispatchChangeEvent();
     }
@@ -495,7 +495,7 @@ export default class SummbitDiscreteSlider extends HTMLElement {
 
   _decrementValue() {
     if(this._value > this._minimum) {
-      this.value -= 1;
+      this[nameValue] -= 1;
       this._dispatchInputEvent();
       this._dispatchChangeEvent();
     }
@@ -503,7 +503,7 @@ export default class SummbitDiscreteSlider extends HTMLElement {
 
   _setValueToMinimum() {
     if(this._value != this._minimum) {
-      this.value = this._minimum;
+      this[nameValue] = this._minimum;
       this._dispatchInputEvent();
       this._dispatchChangeEvent();
     }
@@ -511,7 +511,7 @@ export default class SummbitDiscreteSlider extends HTMLElement {
 
   _setValueToMaximum() {
     if(this._value != this._maximum) {
-      this.value = this._maximum;
+      this[nameValue] = this._maximum;
       this._dispatchInputEvent();
       this._dispatchChangeEvent();
     }
@@ -521,7 +521,7 @@ export default class SummbitDiscreteSlider extends HTMLElement {
     let index = Math.round(this._calculateProgress(event) * (this._maximum - this._minimum));
     let value = parseInt(this._dotContainerElement.children[index].dataset.value);
     if(this._value != value) {
-      this.value = value;
+      this[nameValue] = value;
       this._dispatchInputEvent();
     }
   }
