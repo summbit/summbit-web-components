@@ -396,8 +396,8 @@ export default class SummbitDiscreteSlider extends HTMLElement {
 
   _createAllDots() {
     this._initializeLimits();
-    let currentDotCount  = this._dotContainerElement.childElementCount;
-    let requiredDotCount = this._maximum - this._minimum + 1;
+    const currentDotCount  = this._dotContainerElement.childElementCount;
+    const requiredDotCount = this._maximum - this._minimum + 1;
     this._createAdditionalDots(requiredDotCount - currentDotCount);
     this._deleteObsoleteDots(currentDotCount - requiredDotCount);
   }
@@ -430,16 +430,16 @@ export default class SummbitDiscreteSlider extends HTMLElement {
   }
 
   _createDot() {
-    let dot       = document.createElement("span");
+    const dot     = document.createElement("span");
     dot.className = nameDot;
     dot.tabIndex  = -1;
     return dot;
   }
 
   _updateDotColorsAndValues() {
-    let computedStyle = window.getComputedStyle(this);
-    let progressColor = computedStyle.getPropertyValue(propertyProgressColor);
-    let trackColor    = computedStyle.getPropertyValue(propertyTrackColor);
+    const computedStyle = window.getComputedStyle(this);
+    const progressColor = computedStyle.getPropertyValue(propertyProgressColor);
+    const trackColor    = computedStyle.getPropertyValue(propertyTrackColor);
     let dot, value;
     for(let i = 0; i < this._dotContainerElement.children.length; i++) {
       value                     = i + this._minimum;
@@ -450,16 +450,16 @@ export default class SummbitDiscreteSlider extends HTMLElement {
   }
 
   _updateThumbPosition() {
-    for(let i = 0; i < this._dotContainerElement.children.length; i++) {
-      if(this._dotContainerElement.children[i].dataset.value == this._value) {
+    for(const dot of this._dotContainerElement.children) {
+      if(dot.dataset.value == this._value) {
         switch(this._orientation) {
           case OrientationEnum.LeftToRight:
           case OrientationEnum.RightToLeft:
-            this._hostStyle.setProperty(propertyThumbPosition, `${this._dotContainerElement.children[i].offsetLeft}px`, "");
+            this._hostStyle.setProperty(propertyThumbPosition, `${dot.offsetLeft}px`, "");
             return;
           case OrientationEnum.TopToBottom:
           case OrientationEnum.BottomToTop:
-            this._hostStyle.setProperty(propertyThumbPosition, `${this._dotContainerElement.children[i].offsetTop}px`, "");
+            this._hostStyle.setProperty(propertyThumbPosition, `${dot.offsetTop}px`, "");
             return;
         }
       }
@@ -520,8 +520,8 @@ export default class SummbitDiscreteSlider extends HTMLElement {
   }
 
   _updateValue(event) {
-    let index = Math.round(this._calculateProgress(event) * (this._maximum - this._minimum));
-    let value = parseInt(this._dotContainerElement.children[index].dataset.value);
+    const index = Math.round(this._calculateProgress(event) * (this._maximum - this._minimum));
+    const value = parseInt(this._dotContainerElement.children[index].dataset.value);
     if(this._value != value) {
       this[nameValue] = value;
       this._dispatchInputEvent();
@@ -529,8 +529,8 @@ export default class SummbitDiscreteSlider extends HTMLElement {
   }
 
   _calculateProgress(event) {
-    let thumbDiameter = parseFloat(window.getComputedStyle(this).getPropertyValue(propertyThumbDiameter));
-    let thumbRadius   = thumbDiameter / 2;
+    const thumbDiameter = parseFloat(window.getComputedStyle(this).getPropertyValue(propertyThumbDiameter));
+    const thumbRadius   = thumbDiameter / 2;
     let trackLength, position;
     switch(this._orientation) {
       case OrientationEnum.LeftToRight:
