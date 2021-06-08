@@ -489,7 +489,7 @@ export default class SummbitDiscreteSlider extends HTMLElement {
 
   _incrementValue() {
     if(this._value < this._maximum) {
-      this[nameValue] += 1;
+      this[nameValue]++;
       this._dispatchInputEvent();
       this._dispatchChangeEvent();
     }
@@ -497,7 +497,7 @@ export default class SummbitDiscreteSlider extends HTMLElement {
 
   _decrementValue() {
     if(this._value > this._minimum) {
-      this[nameValue] -= 1;
+      this[nameValue]--;
       this._dispatchInputEvent();
       this._dispatchChangeEvent();
     }
