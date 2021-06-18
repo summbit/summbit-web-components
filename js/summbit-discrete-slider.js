@@ -398,8 +398,14 @@ export default class SummbitDiscreteSlider extends HTMLElement {
     this._initializeLimits();
     const currentDotCount  = this._dotContainerElement.childElementCount;
     const requiredDotCount = this._maximum - this._minimum + 1;
-    this._createAdditionalDots(requiredDotCount - currentDotCount);
-    this._deleteObsoleteDots(currentDotCount - requiredDotCount);
+    if(currentDotCount != requiredDotCount) {
+      const dots = document.createDocumentFragment();
+      for(let i = 0; i < requiredDotCount; i++) {
+        dots.appendChild(this._createDot());
+      }
+      this._dotContainerElement.replaceChildren(dots);
+      this._updateDotColorsAndValues();
+    }
   }
 
   _initializeLimits() {
@@ -408,24 +414,6 @@ export default class SummbitDiscreteSlider extends HTMLElement {
     }
     if(isNaN(this._maximum)) {
       this._maximum = initialMaximum;
-    }
-  }
-
-  _createAdditionalDots(dotCount) {
-    if(dotCount > 0) {
-      for(let i = 0; i < dotCount; i++) {
-        this._dotContainerElement.appendChild(this._createDot());
-      }
-      this._updateDotColorsAndValues();
-    }
-  }
-
-  _deleteObsoleteDots(dotCount) {
-    if(dotCount > 0) {
-      for(let i = 0; i < dotCount; i++) {
-        this._dotContainerElement.removeChild(this._dotContainerElement.lastChild);
-      }
-      this._updateDotColorsAndValues();
     }
   }
 
