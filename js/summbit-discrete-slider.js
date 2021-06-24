@@ -360,9 +360,10 @@ export default class SummbitDiscreteSlider extends HTMLElement {
 
   _pointerDownHandler(event) {
     this.setPointerCapture(event.pointerId);
-    this.onpointermove = this._pointerMoveHandler.bind(this);
-    this.onpointerup   = this._pointerUpHandler.bind(this);
-    this._startValue   = this._value;
+    this.onpointermove   = this._pointerMoveHandler.bind(this);
+    this.onpointerup     = this._pointerUpHandler.bind(this);
+    this.onpointercancel = this._pointerUpHandler.bind(this);
+    this._startValue     = this._value;
     this._updateValue(event);
   }
 
@@ -371,8 +372,9 @@ export default class SummbitDiscreteSlider extends HTMLElement {
   }
 
   _pointerUpHandler(event) {
-    this.onpointermove = null;
-    this.onpointerup   = null;
+    this.onpointermove   = null;
+    this.onpointerup     = null;
+    this.onpointercancel = null;
     if(this._startValue != this._value) {
       this._dispatchChangeEvent();
     }
