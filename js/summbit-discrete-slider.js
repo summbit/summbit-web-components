@@ -288,19 +288,19 @@ export default class SummbitDiscreteSlider extends HTMLElement {
     if(newValue !== null) {
       switch(attributeName) {
         case nameMinimum:
-          this._minimum = parseInt(newValue);
+          this._minimum = parseInt(newValue, 10);
           this._createAllDots();
           this._updateThumbPosition();
           this._restrictValueToMinimum();
           break;
         case nameMaximum:
-          this._maximum = parseInt(newValue);
+          this._maximum = parseInt(newValue, 10);
           this._createAllDots();
           this._updateThumbPosition();
           this._restrictValueToMaximum();
           break;
         case nameValue:
-          this._value = this._clampValue(parseInt(newValue));
+          this._value = this._clampValue(parseInt(newValue, 10));
           this._createAllDots();
           this._updateThumbPosition();
           this._updateDotColorsAndValues();
@@ -515,7 +515,7 @@ export default class SummbitDiscreteSlider extends HTMLElement {
 
   _updateValue(event) {
     const index = Math.round(this._calculateProgress(event) * (this._maximum - this._minimum));
-    const value = parseInt(this._dotContainerElement.children[index].dataset.value);
+    const value = parseInt(this._dotContainerElement.children[index].dataset.value, 10);
     if(this._value != value) {
       this[nameValue] = value;
       this._dispatchInputEvent();
