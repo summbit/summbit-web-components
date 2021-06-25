@@ -72,14 +72,14 @@
       <summbit-discrete-slider id="summbit-discrete-slider-8" min="-8"  max="-3" orientation="bottom-to-top"           style="grid-column: 4;     grid-row: 4; width: 100px; height: 90%;"  oninput="inputEventListener(event);" onchange="changeEventListener(event);" class="slider"></summbit-discrete-slider>
     </div>
     <script type="module">
-      import SummbitDiscreteSlider, { OrientationEnum } from "../js/summbit-discrete-slider.js";
+      import SummbitDiscreteSlider from "../js/summbit-discrete-slider.js";
       var slider2          = document.getElementById("summbit-discrete-slider-2");
       var slider6          = document.getElementById("summbit-discrete-slider-6");
       var slider7          = document.getElementById("summbit-discrete-slider-7");
       slider2.min          = 1;
       slider2.max          = 7;
       slider2.value        = 4;
-      slider6.orientation  = OrientationEnum.TopToBottom;
+      slider6.orientation  = SummbitDiscreteSlider.Orientation.TopToBottom;
       slider6.style.height = "90%";
       slider7.value        = 12;
       slider7.min          = -3;

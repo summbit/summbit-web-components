@@ -1,4 +1,4 @@
-export const OrientationEnum = Object.freeze({
+const OrientationEnum = Object.freeze({
   LeftToRight: "left-to-right",
   RightToLeft: "right-to-left",
   TopToBottom: "top-to-bottom",
@@ -352,6 +352,10 @@ export default class SummbitDiscreteSlider extends HTMLElement {
 
   get [nameOrientation]() {
     return this._orientation;
+  }
+
+  static get Orientation() {
+    return OrientationEnum;
   }
 
   _resizeHandler(entries) {
