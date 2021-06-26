@@ -28,8 +28,16 @@ const propertyTrackColor    = `--${webComponentName}-private-track-color`;
 const propertyProgressColor = `--${webComponentName}-private-progress-color`;
 const propertyThumbDiameter = `--${webComponentName}-private-thumb-diameter`;
 const propertyThumbPosition = `--${webComponentName}-private-thumb-position`;
+const propertyMinimumWidth  = "min-width";
+const propertyMinimumHeight = "min-height";
+const propertyWidth         = "width";
+const propertyHeight        = "height";
 const initialMinimum        = 0;
 const initialMaximum        = 5;
+const initialWidth          = "150px";
+const initialHeight         = `var(${propertyThumbDiameter})`;
+const minimumWidth          = `var(--${webComponentName}-private-minimum-width)`;
+const minimumHeight         = `var(${propertyThumbDiameter})`;
 const template              = document.createElement("template");
 template.innerHTML          = `
 <div id="${nameTrack}" class="${nameTrack}-${OrientationEnum.LeftToRight}" tabindex="0">
@@ -53,6 +61,7 @@ template.innerHTML          = `
   --${webComponentName}-private-thumb-radius: calc(var(${propertyThumbDiameter}) / 2);
   --${webComponentName}-private-thumb-offset: calc(calc(100% - var(${propertyThumbDiameter})) / 2);
   --${webComponentName}-private-dot-diameter: calc(var(--${webComponentName}-private-track-width) * 2);
+  --${webComponentName}-private-minimum-width: calc(var(${propertyThumbDiameter}) + var(--${webComponentName}-private-dot-diameter));
   --${webComponentName}-private-dot-container-offset-front-side: calc(calc(var(${propertyThumbDiameter}) - var(--${webComponentName}-private-dot-diameter)) / 2);
   --${webComponentName}-private-dot-container-offset-long-side: calc(calc(100% - var(--${webComponentName}-private-dot-diameter)) / 2);
   all: initial;
@@ -60,6 +69,10 @@ template.innerHTML          = `
   display: inline-block;
   padding: 0;
   margin: 0;
+  ${propertyMinimumWidth}: ${minimumWidth};
+  ${propertyMinimumHeight}: ${minimumHeight};
+  ${propertyWidth}: ${initialWidth};
+  ${propertyHeight}: ${initialHeight};
 }
 
 .${nameTrack}-${OrientationEnum.LeftToRight},
@@ -74,14 +87,14 @@ template.innerHTML          = `
 
 .${nameTrack}-${OrientationEnum.LeftToRight},
 .${nameTrack}-${OrientationEnum.RightToLeft} {
-  min-width: 150px;
-  min-height: var(${propertyThumbDiameter});
+  ${propertyMinimumWidth}: ${minimumWidth};
+  ${propertyMinimumHeight}: ${minimumHeight};
 }
 
 .${nameTrack}-${OrientationEnum.TopToBottom},
 .${nameTrack}-${OrientationEnum.BottomToTop} {
-  min-height: 150px;
-  min-width: var(${propertyThumbDiameter});
+  ${propertyMinimumWidth}: ${minimumHeight};
+  ${propertyMinimumHeight}: ${minimumWidth};
 }
 
 .${nameMinimum}-${OrientationEnum.LeftToRight},
@@ -308,6 +321,7 @@ export default class SummbitDiscreteSlider extends HTMLElement {
         case nameOrientation:
           this._orientation = newValue;
           this._assignIncrementAndDecrementKeys();
+          this._updateMinimumSize();
           this._updateElementStyle();
           this._createAllDots();
           this._updateThumbPosition();
@@ -561,6 +575,25 @@ export default class SummbitDiscreteSlider extends HTMLElement {
       case OrientationEnum.TopToBottom:
         this._keysToIncrement = keyGroup3;
         this._keysToDecrement = keyGroup2;
+        break;
+    }
+  }
+
+  _updateMinimumSize() {
+    switch(this._orientation) {
+      case OrientationEnum.LeftToRight:
+      case OrientationEnum.RightToLeft:
+        this._hostStyle.setProperty(propertyMinimumWidth, minimumWidth);
+        this._hostStyle.setProperty(propertyMinimumHeight, minimumHeight);
+        this._hostStyle.setProperty(propertyWidth, initialWidth);
+        this._hostStyle.setProperty(propertyHeight, initialHeight);
+        break;
+      case OrientationEnum.TopToBottom:
+      case OrientationEnum.BottomToTop:
+        this._hostStyle.setProperty(propertyMinimumWidth, minimumHeight);
+        this._hostStyle.setProperty(propertyMinimumHeight, minimumWidth);
+        this._hostStyle.setProperty(propertyWidth, initialHeight);
+        this._hostStyle.setProperty(propertyHeight, initialWidth);
         break;
     }
   }
