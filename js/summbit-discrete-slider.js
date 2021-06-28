@@ -67,8 +67,6 @@ template.innerHTML          = `
   all: initial;
   touch-action: none;
   display: inline-block;
-  padding: 0;
-  margin: 0;
   ${propertyMinimumWidth}: ${minimumWidth};
   ${propertyMinimumHeight}: ${minimumHeight};
   ${propertyWidth}: ${initialWidth};
@@ -537,25 +535,28 @@ export default class SummbitDiscreteSlider extends HTMLElement {
   }
 
   _calculateProgress(event) {
-    const thumbDiameter = parseFloat(window.getComputedStyle(this).getPropertyValue(propertyThumbDiameter));
+    const computedStyle = window.getComputedStyle(this);
+    const paddingLeft   = parseFloat(computedStyle.getPropertyValue("padding-left"));
+    const paddingTop    = parseFloat(computedStyle.getPropertyValue("padding-top"));
+    const thumbDiameter = parseFloat(computedStyle.getPropertyValue(propertyThumbDiameter));
     const thumbRadius   = thumbDiameter / 2;
     let trackLength, position;
     switch(this._orientation) {
       case OrientationEnum.LeftToRight:
-        trackLength = this._trackElement.offsetWidth - thumbDiameter;
-        position    = event.clientX - thumbRadius - this._trackElement.getBoundingClientRect().left;
+        trackLength = parseFloat(computedStyle.getPropertyValue("width")) - thumbDiameter;
+        position    = event.offsetX - paddingLeft - thumbRadius;
         break;
       case OrientationEnum.RightToLeft:
-        trackLength = this._trackElement.offsetWidth - thumbDiameter;
-        position    = this._trackElement.getBoundingClientRect().right - event.clientX - thumbRadius;
+        trackLength = parseFloat(computedStyle.getPropertyValue("width")) - thumbDiameter;
+        position    = trackLength - (event.offsetX - paddingLeft - thumbRadius);
         break;
       case OrientationEnum.TopToBottom:
-        trackLength = this._trackElement.offsetHeight - thumbDiameter;
-        position    = event.clientY - thumbRadius - this._trackElement.getBoundingClientRect().top;
+        trackLength = parseFloat(computedStyle.getPropertyValue("height")) - thumbDiameter;
+        position    = event.offsetY - paddingTop - thumbRadius;
         break;
       case OrientationEnum.BottomToTop:
-        trackLength = this._trackElement.offsetHeight - thumbDiameter;
-        position    = this._trackElement.getBoundingClientRect().bottom - event.clientY - thumbRadius;
+        trackLength = parseFloat(computedStyle.getPropertyValue("height")) - thumbDiameter;
+        position    = trackLength - (event.offsetY - paddingTop - thumbRadius);
         break;
     }
     return Math.min(Math.max(position, 0), trackLength) / trackLength;
