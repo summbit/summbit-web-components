@@ -7,7 +7,10 @@
 Comparable to the standard HTML range input element but designed to look the same in all web browsers. It can be configured to scroll from left to right, right to left, top to bottom and bottom to top. Visually, it clearly indicates the values that it can be set to which is where it derives its name from.
 
 ## Usage
-`<summbit-discrete-slider min="0" max="7" value="3" orientation="left-to-right"></summbit-discrete-slider>`
+````
+<script type="module" src="./summbit-discrete-slider.js"></script>
+<summbit-discrete-slider min="0" max="7" value="3" orientation="left-to-right"></summbit-discrete-slider>
+````
 
 The `summbit-discrete-slider` dispatches both the `input` and the `change` event just like the standard HTML range input element and both the `oninput` and `onchange` attributes / properties work the same way.
 
@@ -17,7 +20,7 @@ The `summbit-discrete-slider` dispatches both the `input` and the `change` event
 |`min`                    |The minimum permitted value                           |0            |
 |`max`                    |The maximum permitted value                           |5            |
 |`value`                  |A positive or negative integer between `min` and `max`|0            |
-|`orientation`            |`left-to-right`: `min` is on the left, `max` is on the right<br>`right-to-left`: `max` is on the left, `min` is on the right<br>`top-to-bottom`: `min` is at the top, `max` is at the bottom<br>`bottom-to-top`: `min` is at the bottom, `max` is at the top|`left-to-right`|
+|`orientation`            |`left-to-right`: `min` is on the left, `max` is on the right<br>`right-to-left`: `max` is on the left, `min` is on the right<br>`top-to-bottom`: `min` is at the top, `max` is at the bottom<br>`bottom-to-top`: `min` is at the bottom, `max` is at the top<br>In JavaScript, the below constants are available to set the value of this property.<br>`import SummbitDiscreteSlider from "./summbit-discrete-slider.js";`<br>`SummbitDiscreteSlider.Orientation.LeftToRight`<br>`SummbitDiscreteSlider.Orientation.RightToLeft`<br>`SummbitDiscreteSlider.Orientation.TopToBottom`<br>`SummbitDiscreteSlider.Orientation.BottomToTop`|`left-to-right`|
 
 ## CSS customization
 
