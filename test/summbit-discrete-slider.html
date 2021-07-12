@@ -50,11 +50,11 @@
       }
 
       function inputEventListener(event) {
-        console.log(event.srcElement.id + " - 'input' event dispatched - value = " + event.detail.value);
+        console.log(event.currentTarget.id + " - 'input' event dispatched - value = " + event.detail.value);
       }
 
       function changeEventListener(event) {
-        console.log(event.srcElement.id + " - 'change' event dispatched - value = " + event.detail.value);
+        console.log(event.currentTarget.id + " - 'change' event dispatched - value = " + event.detail.value);
       }
     </script>
     <div class="grid">
