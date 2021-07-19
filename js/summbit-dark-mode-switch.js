@@ -183,6 +183,7 @@ export default class SummbitDarkModeSwitch extends HTMLElement {
   }
 
   _pointerDownHandler(event) {
+    event.stopPropagation();
     this._toggleState();
   }
 
