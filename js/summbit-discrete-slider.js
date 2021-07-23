@@ -446,8 +446,7 @@ export default class SummbitDiscreteSlider extends HTMLElement {
     const computedStyle = window.getComputedStyle(this);
     const progressColor = computedStyle.getPropertyValue(propertyProgressColor);
     const trackColor    = computedStyle.getPropertyValue(propertyTrackColor);
-    let dot, value;
-    for(let i = 0; i < this._dotContainerElement.children.length; i++) {
+    for(let i = 0, dot, value; i < this._dotContainerElement.children.length; i++) {
       value                     = i + this._minimum;
       dot                       = this._dotContainerElement.children[i];
       dot.dataset.value         = value;
