@@ -282,7 +282,6 @@ export default class SummbitDiscreteSlider extends HTMLElement {
     this._maximumElement      = this.shadowRoot.getElementById(nameMaximum);
     this._dotContainerElement = this.shadowRoot.getElementById(nameDotContainer);
     this._thumbElement        = this.shadowRoot.getElementById(nameThumb);
-    this._hostStyle           = this.shadowRoot.styleSheets[0].rules[0].style;
     this._resizeObserver      = new ResizeObserver(this._resizeHandler.bind(this));
     this._keysToIncrement     = keyGroup1;
     this._keysToDecrement     = keyGroup4;
@@ -330,7 +329,9 @@ export default class SummbitDiscreteSlider extends HTMLElement {
   }
 
   connectedCallback() {
+    this._updateMinimumSize();
     this._createAllDots();
+    this._updateDotColorsAndValues();
     this._resizeObserver.observe(this, { box: "content-box" });
   }
 
@@ -455,17 +456,20 @@ export default class SummbitDiscreteSlider extends HTMLElement {
   }
 
   _updateThumbPosition() {
-    for(const dot of this._dotContainerElement.children) {
-      if(dot.dataset.value == this._value) {
-        switch(this._orientation) {
-          case OrientationEnum.LeftToRight:
-          case OrientationEnum.RightToLeft:
-            this._hostStyle.setProperty(propertyThumbPosition, `${dot.offsetLeft}px`, "");
-            return;
-          case OrientationEnum.TopToBottom:
-          case OrientationEnum.BottomToTop:
-            this._hostStyle.setProperty(propertyThumbPosition, `${dot.offsetTop}px`, "");
-            return;
+    if(this.shadowRoot.styleSheets.length > 0) {
+      for(const dot of this._dotContainerElement.children) {
+        if(dot.dataset.value == this._value) {
+          const hostStyle = this.shadowRoot.styleSheets[0].rules[0].style;
+          switch(this._orientation) {
+            case OrientationEnum.LeftToRight:
+            case OrientationEnum.RightToLeft:
+              hostStyle.setProperty(propertyThumbPosition, `${dot.offsetLeft}px`, "");
+              return;
+            case OrientationEnum.TopToBottom:
+            case OrientationEnum.BottomToTop:
+              hostStyle.setProperty(propertyThumbPosition, `${dot.offsetTop}px`, "");
+              return;
+          }
         }
       }
     }
@@ -580,21 +584,24 @@ export default class SummbitDiscreteSlider extends HTMLElement {
   }
 
   _updateMinimumSize() {
-    switch(this._orientation) {
-      case OrientationEnum.LeftToRight:
-      case OrientationEnum.RightToLeft:
-        this._hostStyle.setProperty(propertyMinimumWidth, minimumWidth);
-        this._hostStyle.setProperty(propertyMinimumHeight, minimumHeight);
-        this._hostStyle.setProperty(propertyWidth, initialWidth);
-        this._hostStyle.setProperty(propertyHeight, initialHeight);
-        break;
-      case OrientationEnum.TopToBottom:
-      case OrientationEnum.BottomToTop:
-        this._hostStyle.setProperty(propertyMinimumWidth, minimumHeight);
-        this._hostStyle.setProperty(propertyMinimumHeight, minimumWidth);
-        this._hostStyle.setProperty(propertyWidth, initialHeight);
-        this._hostStyle.setProperty(propertyHeight, initialWidth);
-        break;
+    if(this.shadowRoot.styleSheets.length > 0) {
+      const hostStyle = this.shadowRoot.styleSheets[0].rules[0].style;
+      switch(this._orientation) {
+        case OrientationEnum.LeftToRight:
+        case OrientationEnum.RightToLeft:
+          hostStyle.setProperty(propertyMinimumWidth, minimumWidth);
+          hostStyle.setProperty(propertyMinimumHeight, minimumHeight);
+          hostStyle.setProperty(propertyWidth, initialWidth);
+          hostStyle.setProperty(propertyHeight, initialHeight);
+          break;
+        case OrientationEnum.TopToBottom:
+        case OrientationEnum.BottomToTop:
+          hostStyle.setProperty(propertyMinimumWidth, minimumHeight);
+          hostStyle.setProperty(propertyMinimumHeight, minimumWidth);
+          hostStyle.setProperty(propertyWidth, initialHeight);
+          hostStyle.setProperty(propertyHeight, initialWidth);
+          break;
+      }
     }
   }
 

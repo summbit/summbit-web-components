@@ -127,10 +127,6 @@ export default class SummbitDarkModeSwitch extends HTMLElement {
     this._thumbElement      = this.shadowRoot.getElementById(nameThumb);
     this._moonElement       = this.shadowRoot.getElementById(nameMoon);
     this._sunElement        = this.shadowRoot.getElementById(nameSun);
-    this._hostStyle         = this.shadowRoot.styleSheets[0].rules[0].style;
-    this._backgroundStyle   = this.shadowRoot.styleSheets[0].rules[1].style;
-    this._iconStyle         = this.shadowRoot.styleSheets[0].rules[4].style;
-    this._thumbStyle        = this.shadowRoot.styleSheets[0].rules[7].style;
     this._isEnabled         = false;
     this._resizeObserver    = new ResizeObserver(this._resizeHandler.bind(this));
     this._moonElement.addEventListener("transitionend", this._disableAnimations.bind(this));
@@ -176,10 +172,11 @@ export default class SummbitDarkModeSwitch extends HTMLElement {
     const minimumWidth  = height * 2;
     const offset        = height / 12;
     const thumbDiameter = offset * 10;
-    this._hostStyle.setProperty(propertyMinimumWidth, `${minimumWidth}px`);
-    this._hostStyle.setProperty(propertyThumbOffset, `${offset}px`);
-    this._hostStyle.setProperty(propertyThumbDiameter, `${thumbDiameter}px`);
-    this._hostStyle.setProperty(propertyThumbTranslation, `${Math.max(minimumWidth, width) - thumbDiameter - 2 * offset}px`);
+    const hostStyle     = this.shadowRoot.styleSheets[0].rules[0].style;
+    hostStyle.setProperty(propertyMinimumWidth, `${minimumWidth}px`);
+    hostStyle.setProperty(propertyThumbOffset, `${offset}px`);
+    hostStyle.setProperty(propertyThumbDiameter, `${thumbDiameter}px`);
+    hostStyle.setProperty(propertyThumbTranslation, `${Math.max(minimumWidth, width) - thumbDiameter - 2 * offset}px`);
   }
 
   _pointerDownHandler(event) {
@@ -201,15 +198,17 @@ export default class SummbitDarkModeSwitch extends HTMLElement {
   }
 
   _enableAnimations() {
-    this._backgroundStyle.setProperty(propertyTransition, propertyBackgroundTransition);
-    this._thumbStyle     .setProperty(propertyTransition, propertyThumbTransition);
-    this._iconStyle      .setProperty(propertyTransition, propertyIconTransition);
+    const rules = this.shadowRoot.styleSheets[0].rules;
+    rules[1].style.setProperty(propertyTransition, propertyBackgroundTransition);
+    rules[4].style.setProperty(propertyTransition, propertyIconTransition);
+    rules[7].style.setProperty(propertyTransition, propertyThumbTransition);
   }
 
   _disableAnimations() {
-    this._backgroundStyle.removeProperty(propertyTransition);
-    this._thumbStyle     .removeProperty(propertyTransition);
-    this._iconStyle      .removeProperty(propertyTransition);
+    const rules = this.shadowRoot.styleSheets[0].rules;
+    rules[1].style.removeProperty(propertyTransition);
+    rules[4].style.removeProperty(propertyTransition);
+    rules[7].style.removeProperty(propertyTransition);
   }
 
   _dispatchChangeEvent() {

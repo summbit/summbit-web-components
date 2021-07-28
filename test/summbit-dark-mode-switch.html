@@ -151,7 +151,7 @@
         width: 80px;
       }
 
-      #switch6 {
+      .switch6 {
         --summbit-dark-mode-switch-light-color: #f7f9fb;
         --summbit-dark-mode-switch-dark-color: #1b1c1d;
         width: 10px;
@@ -237,12 +237,20 @@
           <button onclick="toggleByCode('switch6');">Toggle by Code</button>
           <button onclick="toggleByAttribute('switch6');">Toggle by Attribute</button>
         </div>
-        <div class="centering-container">
-          <summbit-dark-mode-switch id="switch6" onchange="toggleBackgroundColor('switch6', event.detail.enabled);"></summbit-dark-mode-switch>
+        <div id="container" class="centering-container">
         </div>
       </div>
     </grid>
     <script type="module">
+      const name      = "switch6";
+      const container = document.getElementById("container");
+      const switch6   = document.createElement("summbit-dark-mode-switch");
+
+      switch6.id        = name;
+      switch6.className = name;
+      switch6.addEventListener("change", event => { toggleBackgroundColor(name, event.detail.enabled) });
+      container.appendChild(switch6);
+
       document.getElementById("switch5").enabled = true;
     </script>
 
