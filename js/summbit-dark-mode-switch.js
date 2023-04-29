@@ -172,7 +172,7 @@ export default class SummbitDarkModeSwitch extends HTMLElement {
     const minimumWidth  = height * 2;
     const offset        = height / 12;
     const thumbDiameter = offset * 10;
-    const hostStyle     = this.shadowRoot.styleSheets[0].rules[0].style;
+    const hostStyle     = this.shadowRoot.styleSheets[0].cssRules[0].style;
     hostStyle.setProperty(propertyMinimumWidth, `${minimumWidth}px`);
     hostStyle.setProperty(propertyThumbOffset, `${offset}px`);
     hostStyle.setProperty(propertyThumbDiameter, `${thumbDiameter}px`);
@@ -198,14 +198,14 @@ export default class SummbitDarkModeSwitch extends HTMLElement {
   }
 
   _enableAnimations() {
-    const rules = this.shadowRoot.styleSheets[0].rules;
+    const rules = this.shadowRoot.styleSheets[0].cssRules;
     rules[1].style.setProperty(propertyTransition, propertyBackgroundTransition);
     rules[4].style.setProperty(propertyTransition, propertyIconTransition);
     rules[7].style.setProperty(propertyTransition, propertyThumbTransition);
   }
 
   _disableAnimations() {
-    const rules = this.shadowRoot.styleSheets[0].rules;
+    const rules = this.shadowRoot.styleSheets[0].cssRules;
     rules[1].style.removeProperty(propertyTransition);
     rules[4].style.removeProperty(propertyTransition);
     rules[7].style.removeProperty(propertyTransition);

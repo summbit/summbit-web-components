@@ -459,7 +459,7 @@ export default class SummbitDiscreteSlider extends HTMLElement {
     if(this.shadowRoot.styleSheets.length > 0) {
       for(const dot of this._dotContainerElement.children) {
         if(dot.dataset.value == this._value) {
-          const hostStyle = this.shadowRoot.styleSheets[0].rules[0].style;
+          const hostStyle = this.shadowRoot.styleSheets[0].cssRules[0].style;
           switch(this._orientation) {
             case OrientationEnum.LeftToRight:
             case OrientationEnum.RightToLeft:
@@ -585,7 +585,7 @@ export default class SummbitDiscreteSlider extends HTMLElement {
 
   _updateMinimumSize() {
     if(this.shadowRoot.styleSheets.length > 0) {
-      const hostStyle = this.shadowRoot.styleSheets[0].rules[0].style;
+      const hostStyle = this.shadowRoot.styleSheets[0].cssRules[0].style;
       switch(this._orientation) {
         case OrientationEnum.LeftToRight:
         case OrientationEnum.RightToLeft:
