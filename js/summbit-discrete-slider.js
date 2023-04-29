@@ -268,26 +268,40 @@ template.innerHTML          = `
 `;
 
 export default class SummbitDiscreteSlider extends HTMLElement {
+  #minimum;
+  #maximum;
+  #value;
+  #startValue;
+  #orientation;
+  #trackElement;
+  #minimumElement;
+  #maximumElement;
+  #dotContainerElement;
+  #thumbElement;
+  #resizeObserver;
+  #keysToIncrement;
+  #keysToDecrement;
+
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this._minimum             = Number.NaN;
-    this._maximum             = Number.NaN;
-    this._value               = 0;
-    this._startValue          = 0;
-    this._orientation         = OrientationEnum.LeftToRight;
-    this._trackElement        = this.shadowRoot.getElementById(nameTrack);
-    this._minimumElement      = this.shadowRoot.getElementById(nameMinimum);
-    this._maximumElement      = this.shadowRoot.getElementById(nameMaximum);
-    this._dotContainerElement = this.shadowRoot.getElementById(nameDotContainer);
-    this._thumbElement        = this.shadowRoot.getElementById(nameThumb);
-    this._resizeObserver      = new ResizeObserver(this._resizeHandler.bind(this));
-    this._keysToIncrement     = keyGroup1;
-    this._keysToDecrement     = keyGroup4;
+    this.#minimum             = Number.NaN;
+    this.#maximum             = Number.NaN;
+    this.#value               = 0;
+    this.#startValue          = 0;
+    this.#orientation         = OrientationEnum.LeftToRight;
+    this.#trackElement        = this.shadowRoot.getElementById(nameTrack);
+    this.#minimumElement      = this.shadowRoot.getElementById(nameMinimum);
+    this.#maximumElement      = this.shadowRoot.getElementById(nameMaximum);
+    this.#dotContainerElement = this.shadowRoot.getElementById(nameDotContainer);
+    this.#thumbElement        = this.shadowRoot.getElementById(nameThumb);
+    this.#resizeObserver      = new ResizeObserver(this.#resizeHandler.bind(this));
+    this.#keysToIncrement     = keyGroup1;
+    this.#keysToDecrement     = keyGroup4;
     this.ondragstart          = () => false;
-    this.addEventListener("pointerdown", this._pointerDownHandler.bind(this));
-    this.addEventListener("keydown", this._keyDownHandler.bind(this));
+    this.addEventListener("pointerdown", this.#pointerDownHandler.bind(this));
+    this.addEventListener("keydown", this.#keyDownHandler.bind(this));
   }
 
   static get observedAttributes() {
@@ -298,41 +312,41 @@ export default class SummbitDiscreteSlider extends HTMLElement {
     if(newValue !== null) {
       switch(attributeName) {
         case nameMinimum:
-          this._minimum = parseInt(newValue, 10);
-          this._createAllDots();
-          this._updateThumbPosition();
-          this._restrictValueToMinimum();
+          this.#minimum = parseInt(newValue, 10);
+          this.#createAllDots();
+          this.#updateThumbPosition();
+          this.#restrictValueToMinimum();
           break;
         case nameMaximum:
-          this._maximum = parseInt(newValue, 10);
-          this._createAllDots();
-          this._updateThumbPosition();
-          this._restrictValueToMaximum();
+          this.#maximum = parseInt(newValue, 10);
+          this.#createAllDots();
+          this.#updateThumbPosition();
+          this.#restrictValueToMaximum();
           break;
         case nameValue:
-          this._value = this._clampValue(parseInt(newValue, 10));
-          this._createAllDots();
-          this._updateThumbPosition();
-          this._updateDotColorsAndValues();
+          this.#value = this.#clampValue(parseInt(newValue, 10));
+          this.#createAllDots();
+          this.#updateThumbPosition();
+          this.#updateDotColorsAndValues();
           break;
         case nameOrientation:
-          this._orientation = newValue;
-          this._assignIncrementAndDecrementKeys();
-          this._updateMinimumSize();
-          this._updateElementStyle();
-          this._createAllDots();
-          this._updateThumbPosition();
-          this._updateDotColorsAndValues();
+          this.#orientation = newValue;
+          this.#assignIncrementAndDecrementKeys();
+          this.#updateMinimumSize();
+          this.#updateElementStyle();
+          this.#createAllDots();
+          this.#updateThumbPosition();
+          this.#updateDotColorsAndValues();
           break;
       }
     }
   }
 
   connectedCallback() {
-    this._updateMinimumSize();
-    this._createAllDots();
-    this._updateDotColorsAndValues();
-    this._resizeObserver.observe(this, { box: "content-box" });
+    this.#updateMinimumSize();
+    this.#createAllDots();
+    this.#updateDotColorsAndValues();
+    this.#resizeObserver.observe(this, { box: "content-box" });
   }
 
   set [nameMinimum](value) {
@@ -340,7 +354,7 @@ export default class SummbitDiscreteSlider extends HTMLElement {
   }
 
   get [nameMinimum]() {
-    return this._minimum;
+    return this.#minimum;
   }
 
   set [nameMaximum](value) {
@@ -348,15 +362,15 @@ export default class SummbitDiscreteSlider extends HTMLElement {
   }
 
   get [nameMaximum]() {
-    return this._maximum;
+    return this.#maximum;
   }
 
   set [nameValue](value) {
-    this.setAttribute(nameValue, this._clampValue(value));
+    this.setAttribute(nameValue, this.#clampValue(value));
   }
 
   get [nameValue]() {
-    return this._value;
+    return this.#value;
   }
 
   set [nameOrientation](value) {
@@ -364,103 +378,103 @@ export default class SummbitDiscreteSlider extends HTMLElement {
   }
 
   get [nameOrientation]() {
-    return this._orientation;
+    return this.#orientation;
   }
 
   static get Orientation() {
     return OrientationEnum;
   }
 
-  _resizeHandler(entries) {
-    this._updateThumbPosition();
+  #resizeHandler(entries) {
+    this.#updateThumbPosition();
   }
 
-  _pointerDownHandler(event) {
+  #pointerDownHandler(event) {
     this.setPointerCapture(event.pointerId);
-    this.onpointermove   = this._pointerMoveHandler.bind(this);
-    this.onpointerup     = this._pointerUpHandler.bind(this);
-    this.onpointercancel = this._pointerUpHandler.bind(this);
-    this._startValue     = this._value;
-    this._updateValue(event);
+    this.onpointermove   = this.#pointerMoveHandler.bind(this);
+    this.onpointerup     = this.#pointerUpHandler.bind(this);
+    this.onpointercancel = this.#pointerUpHandler.bind(this);
+    this.#startValue     = this.#value;
+    this.#updateValue(event);
   }
 
-  _pointerMoveHandler(event) {
-    this._updateValue(event);
+  #pointerMoveHandler(event) {
+    this.#updateValue(event);
   }
 
-  _pointerUpHandler(event) {
+  #pointerUpHandler(event) {
     this.onpointermove   = null;
     this.onpointerup     = null;
     this.onpointercancel = null;
-    if(this._startValue != this._value) {
-      this._dispatchChangeEvent();
+    if(this.#startValue != this.#value) {
+      this.#dispatchChangeEvent();
     }
   }
 
-  _keyDownHandler(event) {
-    if(this._keysToIncrement.includes(event.code)) {
+  #keyDownHandler(event) {
+    if(this.#keysToIncrement.includes(event.code)) {
       event.preventDefault();
-      this._incrementValue();
-    } else if(this._keysToDecrement.includes(event.code)) {
+      this.#incrementValue();
+    } else if(this.#keysToDecrement.includes(event.code)) {
       event.preventDefault();
-      this._decrementValue();
+      this.#decrementValue();
     } else if(keysToSetToMinimum.includes(event.code)) {
       event.preventDefault();
-      this._setValueToMinimum();
+      this.#setValueToMinimum();
     } else if(keysToSetToMaximum.includes(event.code)) {
       event.preventDefault();
-      this._setValueToMaximum();
+      this.#setValueToMaximum();
     }
   }
 
-  _createAllDots() {
-    this._initializeLimits();
-    const currentDotCount  = this._dotContainerElement.childElementCount;
-    const requiredDotCount = this._maximum - this._minimum + 1;
+  #createAllDots() {
+    this.#initializeLimits();
+    const currentDotCount  = this.#dotContainerElement.childElementCount;
+    const requiredDotCount = this.#maximum - this.#minimum + 1;
     if(currentDotCount != requiredDotCount) {
       const dots = document.createDocumentFragment();
       for(let i = 0; i < requiredDotCount; i++) {
-        dots.appendChild(this._createDot());
+        dots.appendChild(this.#createDot());
       }
-      this._dotContainerElement.replaceChildren(dots);
-      this._updateDotColorsAndValues();
+      this.#dotContainerElement.replaceChildren(dots);
+      this.#updateDotColorsAndValues();
     }
   }
 
-  _initializeLimits() {
-    if(isNaN(this._minimum)) {
-      this._minimum = initialMinimum;
+  #initializeLimits() {
+    if(isNaN(this.#minimum)) {
+      this.#minimum = initialMinimum;
     }
-    if(isNaN(this._maximum)) {
-      this._maximum = initialMaximum;
+    if(isNaN(this.#maximum)) {
+      this.#maximum = initialMaximum;
     }
   }
 
-  _createDot() {
+  #createDot() {
     const dot     = document.createElement("span");
     dot.className = nameDot;
     dot.tabIndex  = -1;
     return dot;
   }
 
-  _updateDotColorsAndValues() {
+  #updateDotColorsAndValues() {
     const computedStyle = window.getComputedStyle(this);
     const progressColor = computedStyle.getPropertyValue(propertyProgressColor);
     const trackColor    = computedStyle.getPropertyValue(propertyTrackColor);
-    for(let i = 0, dot, value; i < this._dotContainerElement.children.length; i++) {
-      value                     = i + this._minimum;
-      dot                       = this._dotContainerElement.children[i];
+    for(let i = 0, dot, value; i < this.#dotContainerElement.children.length; i++) {
+      value                     = i + this.#minimum;
+      dot                       = this.#dotContainerElement.children[i];
       dot.dataset.value         = value;
-      dot.style.backgroundColor = value > this._value ? trackColor : progressColor;
+      dot.style.backgroundColor = value > this.#value ? trackColor : progressColor;
     }
   }
 
-  _updateThumbPosition() {
+  #updateThumbPosition() {
     if(this.shadowRoot.styleSheets.length > 0) {
-      for(const dot of this._dotContainerElement.children) {
-        if(dot.dataset.value == this._value) {
+      for(const dot of this.#dotContainerElement.children) {
+        if(dot.dataset.value == this.#value) {
           const hostStyle = this.shadowRoot.styleSheets[0].cssRules[0].style;
-          switch(this._orientation) {
+          switch(this.#orientation) {
             case OrientationEnum.LeftToRight:
             case OrientationEnum.RightToLeft:
               hostStyle.setProperty(propertyThumbPosition, `${dot.offsetLeft}px`, "");
@@ -475,76 +489,76 @@ export default class SummbitDiscreteSlider extends HTMLElement {
     }
   }
 
-  _clampValue(value) {
-    if(!isNaN(this._minimum) && value < this._minimum) {
-      return this._minimum;
-    } else if(!isNaN(this._maximum) && value > this._maximum) {
-      return this._maximum;
+  #clampValue(value) {
+    if(!isNaN(this.#minimum) && value < this.#minimum) {
+      return this.#minimum;
+    } else if(!isNaN(this.#maximum) && value > this.#maximum) {
+      return this.#maximum;
     }
     return value;
   }
 
-  _restrictValueToMinimum() {
-    if(this._value < this._minimum) {
-      this[nameValue] = this._minimum;
+  #restrictValueToMinimum() {
+    if(this.#value < this.#minimum) {
+      this[nameValue] = this.#minimum;
     }
   }
 
-  _restrictValueToMaximum() {
-    if(this._value > this._maximum) {
-      this[nameValue] = this._maximum;
+  #restrictValueToMaximum() {
+    if(this.#value > this.#maximum) {
+      this[nameValue] = this.#maximum;
     }
   }
 
-  _incrementValue() {
-    if(this._value < this._maximum) {
+  #incrementValue() {
+    if(this.#value < this.#maximum) {
       this[nameValue]++;
-      this._dispatchInputEvent();
-      this._dispatchChangeEvent();
+      this.#dispatchInputEvent();
+      this.#dispatchChangeEvent();
     }
   }
 
-  _decrementValue() {
-    if(this._value > this._minimum) {
+  #decrementValue() {
+    if(this.#value > this.#minimum) {
       this[nameValue]--;
-      this._dispatchInputEvent();
-      this._dispatchChangeEvent();
+      this.#dispatchInputEvent();
+      this.#dispatchChangeEvent();
     }
   }
 
-  _setValueToMinimum() {
-    if(this._value != this._minimum) {
-      this[nameValue] = this._minimum;
-      this._dispatchInputEvent();
-      this._dispatchChangeEvent();
+  #setValueToMinimum() {
+    if(this.#value != this.#minimum) {
+      this[nameValue] = this.#minimum;
+      this.#dispatchInputEvent();
+      this.#dispatchChangeEvent();
     }
   }
 
-  _setValueToMaximum() {
-    if(this._value != this._maximum) {
-      this[nameValue] = this._maximum;
-      this._dispatchInputEvent();
-      this._dispatchChangeEvent();
+  #setValueToMaximum() {
+    if(this.#value != this.#maximum) {
+      this[nameValue] = this.#maximum;
+      this.#dispatchInputEvent();
+      this.#dispatchChangeEvent();
     }
   }
 
-  _updateValue(event) {
-    const index = Math.round(this._calculateProgress(event) * (this._maximum - this._minimum));
-    const value = parseInt(this._dotContainerElement.children[index].dataset.value, 10);
-    if(this._value != value) {
+  #updateValue(event) {
+    const index = Math.round(this.#calculateProgress(event) * (this.#maximum - this.#minimum));
+    const value = parseInt(this.#dotContainerElement.children[index].dataset.value, 10);
+    if(this.#value != value) {
       this[nameValue] = value;
-      this._dispatchInputEvent();
+      this.#dispatchInputEvent();
     }
   }
 
-  _calculateProgress(event) {
+  #calculateProgress(event) {
     const computedStyle = window.getComputedStyle(this);
     const paddingLeft   = parseFloat(computedStyle.getPropertyValue("padding-left"));
     const paddingTop    = parseFloat(computedStyle.getPropertyValue("padding-top"));
     const thumbDiameter = parseFloat(computedStyle.getPropertyValue(propertyThumbDiameter));
     const thumbRadius   = thumbDiameter / 2;
     let trackLength, position;
-    switch(this._orientation) {
+    switch(this.#orientation) {
       case OrientationEnum.LeftToRight:
         trackLength = parseFloat(computedStyle.getPropertyValue("width")) - thumbDiameter;
         position    = event.offsetX - paddingLeft - thumbRadius;
@@ -565,28 +579,28 @@ export default class SummbitDiscreteSlider extends HTMLElement {
     return Math.min(Math.max(position, 0), trackLength) / trackLength;
   }
 
-  _assignIncrementAndDecrementKeys() {
-    switch(this._orientation) {
+  #assignIncrementAndDecrementKeys() {
+    switch(this.#orientation) {
       case OrientationEnum.LeftToRight:
       case OrientationEnum.BottomToTop:
-        this._keysToIncrement = keyGroup1;
-        this._keysToDecrement = keyGroup4;
+        this.#keysToIncrement = keyGroup1;
+        this.#keysToDecrement = keyGroup4;
         break;
       case OrientationEnum.RightToLeft:
-        this._keysToIncrement = keyGroup2;
-        this._keysToDecrement = keyGroup3;
+        this.#keysToIncrement = keyGroup2;
+        this.#keysToDecrement = keyGroup3;
         break;
       case OrientationEnum.TopToBottom:
-        this._keysToIncrement = keyGroup3;
-        this._keysToDecrement = keyGroup2;
+        this.#keysToIncrement = keyGroup3;
+        this.#keysToDecrement = keyGroup2;
         break;
     }
   }
 
-  _updateMinimumSize() {
+  #updateMinimumSize() {
     if(this.shadowRoot.styleSheets.length > 0) {
       const hostStyle = this.shadowRoot.styleSheets[0].cssRules[0].style;
-      switch(this._orientation) {
+      switch(this.#orientation) {
         case OrientationEnum.LeftToRight:
         case OrientationEnum.RightToLeft:
           hostStyle.setProperty(propertyMinimumWidth, minimumWidth);
@@ -605,20 +619,20 @@ export default class SummbitDiscreteSlider extends HTMLElement {
     }
   }
 
-  _updateElementStyle() {
-    this._trackElement       .className = `${nameTrack}-${this._orientation}`;
-    this._minimumElement     .className = `${nameMinimum}-${this._orientation}`;
-    this._maximumElement     .className = `${nameMaximum}-${this._orientation}`;
-    this._dotContainerElement.className = `${nameDotContainer}-${this._orientation}`;
-    this._thumbElement       .className = `${nameThumb}-${this._orientation}`;
+  #updateElementStyle() {
+    this.#trackElement       .className = `${nameTrack}-${this.#orientation}`;
+    this.#minimumElement     .className = `${nameMinimum}-${this.#orientation}`;
+    this.#maximumElement     .className = `${nameMaximum}-${this.#orientation}`;
+    this.#dotContainerElement.className = `${nameDotContainer}-${this.#orientation}`;
+    this.#thumbElement       .className = `${nameThumb}-${this.#orientation}`;
   }
 
-  _dispatchInputEvent() {
-    this.shadowRoot.dispatchEvent(new CustomEvent("input", { bubbles: true, composed: true, detail: { value: this._value }}));
+  #dispatchInputEvent() {
+    this.shadowRoot.dispatchEvent(new CustomEvent("input", { bubbles: true, composed: true, detail: { value: this.#value }}));
   }
 
-  _dispatchChangeEvent() {
-    this.shadowRoot.dispatchEvent(new CustomEvent("change", { bubbles: true, composed: true, detail: { value: this._value }}));
+  #dispatchChangeEvent() {
+    this.shadowRoot.dispatchEvent(new CustomEvent("change", { bubbles: true, composed: true, detail: { value: this.#value }}));
   }
 }
 

@@ -119,19 +119,26 @@ template.innerHTML                 = `
 `;
 
 export default class SummbitDarkModeSwitch extends HTMLElement {
+  #backgroundElement;
+  #thumbElement;
+  #moonElement;
+  #sunElement;
+  #isEnabled;
+  #resizeObserver;
+
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this._backgroundElement = this.shadowRoot.getElementById(nameBackground);
-    this._thumbElement      = this.shadowRoot.getElementById(nameThumb);
-    this._moonElement       = this.shadowRoot.getElementById(nameMoon);
-    this._sunElement        = this.shadowRoot.getElementById(nameSun);
-    this._isEnabled         = false;
-    this._resizeObserver    = new ResizeObserver(this._resizeHandler.bind(this));
-    this._moonElement.addEventListener("transitionend", this._disableAnimations.bind(this));
-    this.addEventListener("pointerdown", this._pointerDownHandler.bind(this));
-    this.addEventListener("keydown", this._keyDownHandler.bind(this));
+    this.#backgroundElement = this.shadowRoot.getElementById(nameBackground);
+    this.#thumbElement      = this.shadowRoot.getElementById(nameThumb);
+    this.#moonElement       = this.shadowRoot.getElementById(nameMoon);
+    this.#sunElement        = this.shadowRoot.getElementById(nameSun);
+    this.#isEnabled         = false;
+    this.#resizeObserver    = new ResizeObserver(this.#resizeHandler.bind(this));
+    this.#moonElement.addEventListener("transitionend", this.#disableAnimations.bind(this));
+    this.addEventListener("pointerdown", this.#pointerDownHandler.bind(this));
+    this.addEventListener("keydown", this.#keyDownHandler.bind(this));
   }
 
   static get observedAttributes() {
@@ -140,17 +147,17 @@ export default class SummbitDarkModeSwitch extends HTMLElement {
 
   attributeChangedCallback(attributeName, oldValue, newValue) {
     if(attributeName == nameEnabled) {
-      this._isEnabled = this.hasAttribute(nameEnabled);
-      const iconClass = `${nameIcon}-${nameEnabled}-${this._isEnabled}`;
-      this._backgroundElement.setAttribute(nameClass, `${nameBackground}-${nameEnabled}-${this._isEnabled}`);
-      this._thumbElement     .setAttribute(nameClass, `${nameThumb}-${nameEnabled}-${this._isEnabled}`);
-      this._moonElement      .setAttribute(nameClass, iconClass);
-      this._sunElement       .setAttribute(nameClass, iconClass);
+      this.#isEnabled = this.hasAttribute(nameEnabled);
+      const iconClass = `${nameIcon}-${nameEnabled}-${this.#isEnabled}`;
+      this.#backgroundElement.setAttribute(nameClass, `${nameBackground}-${nameEnabled}-${this.#isEnabled}`);
+      this.#thumbElement     .setAttribute(nameClass, `${nameThumb}-${nameEnabled}-${this.#isEnabled}`);
+      this.#moonElement      .setAttribute(nameClass, iconClass);
+      this.#sunElement       .setAttribute(nameClass, iconClass);
     }
   }
 
   connectedCallback() {
-    this._resizeObserver.observe(this, { box: "content-box" });
+    this.#resizeObserver.observe(this, { box: "content-box" });
   }
 
   set [nameEnabled](value) {
@@ -162,10 +169,10 @@ export default class SummbitDarkModeSwitch extends HTMLElement {
   }
 
   get [nameEnabled]() {
-    return this._isEnabled;
+    return this.#isEnabled;
   }
 
-  _resizeHandler(entries) {
+  #resizeHandler(entries) {
     const computedStyle = window.getComputedStyle(this);
     const width         = parseFloat(computedStyle.getPropertyValue("width"));
     const height        = parseFloat(computedStyle.getPropertyValue("height"));
@@ -179,40 +186,40 @@ export default class SummbitDarkModeSwitch extends HTMLElement {
     hostStyle.setProperty(propertyThumbTranslation, `${Math.max(minimumWidth, width) - thumbDiameter - 2 * offset}px`);
   }
 
-  _pointerDownHandler(event) {
+  #pointerDownHandler(event) {
     event.stopPropagation();
-    this._toggleState();
+    this.#toggleState();
   }
 
-  _keyDownHandler(event) {
+  #keyDownHandler(event) {
     if(keysToToggle.includes(event.code)) {
       event.preventDefault();
-      this._toggleState();
+      this.#toggleState();
     }
   }
 
-  _toggleState() {
-    this._enableAnimations();
-    this[nameEnabled] = !this._isEnabled;
-    this._dispatchChangeEvent();
+  #toggleState() {
+    this.#enableAnimations();
+    this[nameEnabled] = !this.#isEnabled;
+    this.#dispatchChangeEvent();
   }
 
-  _enableAnimations() {
+  #enableAnimations() {
     const rules = this.shadowRoot.styleSheets[0].cssRules;
     rules[1].style.setProperty(propertyTransition, propertyBackgroundTransition);
     rules[4].style.setProperty(propertyTransition, propertyIconTransition);
     rules[7].style.setProperty(propertyTransition, propertyThumbTransition);
   }
 
-  _disableAnimations() {
+  #disableAnimations() {
     const rules = this.shadowRoot.styleSheets[0].cssRules;
     rules[1].style.removeProperty(propertyTransition);
     rules[4].style.removeProperty(propertyTransition);
     rules[7].style.removeProperty(propertyTransition);
   }
 
-  _dispatchChangeEvent() {
-    this.shadowRoot.dispatchEvent(new CustomEvent("change", { bubbles: true, composed: true, detail: { enabled: this._isEnabled }}));
+  #dispatchChangeEvent() {
+    this.shadowRoot.dispatchEvent(new CustomEvent("change", { bubbles: true, composed: true, detail: { enabled: this.#isEnabled }}));
   }
 }
 
